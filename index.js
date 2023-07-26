@@ -1,5 +1,4 @@
-// constents
-const categoryList = [
+const newsCategoryList = [
   "Business",
   "Entertainment",
   "General",
@@ -7,10 +6,9 @@ const categoryList = [
   "Science",
   "Sports",
   "Technology",
-  "Everything",
-  "India",
-  "Global",
 ];
+
+// -----------------------------------DARK MODE SWITCH ------------------------------------
 
 var darkModeSwitch = () => {
   document.body.classList.toggle("dark-mode");
@@ -26,34 +24,37 @@ var darkModeSwitch = () => {
   }
 };
 
-let checkedCategory =
-  localStorage.getItem("checkedCategory") ||
-  localStorage.setItem("checkedCategory", JSON.stringify([]));
-const categoryBox = document.getElementById("category");
-const url =
-  "https://newsapi.org/v2/top-headlines?country=in&apiKey=05a456637e42448394a28c7e4e4d9b28";
-const content = document.getElementById("content");
-const checkbox = document.getElementById("checkbox");
+// -----------------------------------API REQUEST ----------------------------------------
 
-async function getNews(url) {
+
+var Language = "en"
+var oldLanguage = ""
+
+async function getNews() {
+  if (Language==="en") {
+    API = `https://gnews.io/api/v4/top-headlines?category="general"&lang=en&country=in&max=10&apikey=6d726128dc6a19b125450b5404dfba9c`
+  }
+  else{
+    API = `https://gnews.io/api/v4/top-headlines?category="general"&lang=hi&country=in&max=10&apikey=6d726128dc6a19b125450b5404dfba9c`
+  }
+
   try {
-    const response = await fetch(url);
+    const response = await fetch(API);
     const newsData = await response.json();
     newsArticles = newsData.articles;
-    console.log(newsData);
 
     for (let index = 0; index < newsArticles.length; index++) {
       var newsArticle = newsArticles[index];
-
       var html = `
             <div class="card p-2">
           <img src="${
-            newsArticle.urlToImage === undefined ||
-            newsArticle.urlToImage === null ||
-            newsArticle.urlToImage === ""
+            newsArticle.image === undefined ||
+            newsArticle.image === null ||
+            newsArticle.image === ""
               ? "https://source.unsplash.com/featured/300x203"
-              : newsArticle.urlToImage
-          }" class="card-img-top" alt="..urlToImage
+              : newsArticle.image
+          }" class="card-img-top" >
+
           <div class="card-body">
           <h4 class="card-text">${newsArticle.title.replace(
             newsArticle.source.name,
@@ -67,67 +68,95 @@ async function getNews(url) {
           </div>
         </div>
             `;
-      content.innerHTML += html;
+            if (oldLanguage === null) {
+              content.innerHTML += html;
+            }
+            else{
+              content.innerHTML = html;
+            }
+            oldLanguage = null
+
     }
   } catch (error) {
     console.error(error);
   }
 }
 
-getNews(url);
+getNews();
 
-// Infinity scroll
-window.addEventListener("scroll", handleScroll);
-let scrollNo = 0;
-function handleScroll() {
-  const content = document.getElementById("content");
-  const contentHeight = content.offsetHeight;
-  const yOffset = window.pageYOffset;
-  const windowSize = window.innerHeight;
-  const triggerAt = 100;
 
-  if (yOffset + windowSize >= contentHeight - triggerAt) {
-    getNews(
-      `https://newsapi.org/v2/everything?country=in&category=${categoryList[scollNo]}&apiKey=05a456637e42448394a28c7e4e4d9b28`
-    );
-    if (scrollNo < 6) {
-      scrollNo++;
-    } else {
-      scrollNo = 0;
+
+// ------------------------------------------------INFINITE SCROLL------------------------------------------
+
+
+  // Infinity scroll
+  window.addEventListener("scroll", handleScroll);
+  function handleScroll() {
+    const content = document.getElementById("content");
+    const contentHeight = content.offsetHeight;
+    const yOffset = window.pageYOffset;
+    const windowSize = window.innerHeight;
+    const triggerAt = 70;
+  
+    if (yOffset + windowSize >= contentHeight - triggerAt) {
+      index=0
+      getNews(
+        
+      );
+      index++
+
     }
   }
-}
 
-// add checkbox List
 
-for (let index = 0; index < categoryList.length; index++) {
-  let categoryHtml = `<div class="form-check m-2">
-  <input class="form-check-input" type="checkbox" value="" id="${
-    categoryList[index]
-  }"
-  ${
-    JSON.parse(localStorage.getItem("checkedCategory")).includes(
-      categoryList[index]
-    )
-      ? "checked"
-      : ""
-  } >
-  <label class="form-check-label" for="${categoryList[index]}">
-  ${categoryList[index]}
-  </label>
-  </div>`;
-  categoryBox.innerHTML += categoryHtml;
-}
 
-// find news
+
+
+  // ---------------------------------------------- CATEGORY OPTION ADDER -------------------------------------------------
+
+ const categoryBox = document.getElementById("category")
+    for (let index = 0; index < newsCategoryList.length; index++) {
+      let categoryHtml = `<div class="form-check m-2">
+    <input class="form-check-input" type="checkbox" value="" id="${
+      newsCategoryList[index]
+    }">
+    <label class="form-check-label" for="${newsCategoryList[index]}">
+    ${newsCategoryList[index]}
+    </label>
+    </div>`;
+      categoryBox.innerHTML += categoryHtml;
+    }
+  
+
+// ---------------------------------------------------FILTER AND WHAT FIND NEWS-----------------------------------------------
+
 
 findNews = () => {
-  var checkedCategory = [];
   for (let index = 0; index < categoryBox.children.length; index++) {
     if (categoryBox.children[index].children[0].checked) {
-      checkedCategory.push(categoryBox.children[index].children[1].innerText);
+        getNews(``)
+      }
     }
-  }
-  localStorage.setItem("checkedCategory", JSON.stringify(checkedCategory));
-  getNews();
-};
+  };
+    
+
+
+
+  // ---------------------------------------Change Language --------------------------------------
+
+
+langChangeButton = document.getElementById("langChangeButton")
+
+
+changeLanguage = () =>{
+if (Language === "en") {
+  oldLanguage = Language
+  Language = "hi"
+}
+else{
+  oldLanguage = Language
+  Language="en"
+}
+console.log(Language);
+getNews()
+}
