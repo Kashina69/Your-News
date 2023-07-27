@@ -1,11 +1,13 @@
 const newsCategoryList = [
-  "Business",
-  "Entertainment",
-  "General",
-  "Health",
-  "Science",
-  "Sports",
-  "Technology",
+  "general",
+  "world",
+  "nation",
+  "technology",
+  "business",
+  "entertainment",
+  "health",
+  "science",
+  "sports",
 ];
 
 // -----------------------------------DARK MODE SWITCH ------------------------------------
@@ -26,23 +28,22 @@ var darkModeSwitch = () => {
 
 // -----------------------------------API REQUEST ----------------------------------------
 
-
-var Language = "en"
-var oldLanguage = ""
+var Language = "en";
+var oldLanguage = "";
+var categoryNumber = 0;
 
 async function getNews() {
-  if (Language==="en") {
-    API = `https://gnews.io/api/v4/top-headlines?category="general"&lang=en&country=in&max=10&apikey=6d726128dc6a19b125450b5404dfba9c`
-  }
-  else{
-    API = `https://gnews.io/api/v4/top-headlines?category="general"&lang=hi&country=in&max=10&apikey=6d726128dc6a19b125450b5404dfba9c`
+  if (Language === "en") {
+    API = `https://gnews.io/api/v4/top-headlines?category=${newsCategoryList[categoryNumber]}&lang=en&country=in&max=10&apikey=6d726128dc6a19b125450b5404dfba9c`;
+  } else {
+    API = `https://gnews.io/api/v4/top-headlines?category=${newsCategoryList[categoryNumber]}&lang=hi&country=in&max=10&apikey=6d726128dc6a19b125450b5404dfba9c`;
   }
 
   try {
     const response = await fetch(API);
     const newsData = await response.json();
     newsArticles = newsData.articles;
-
+console.log(categoryNumber);
     for (let index = 0; index < newsArticles.length; index++) {
       var newsArticle = newsArticles[index];
       var html = `
@@ -68,95 +69,83 @@ async function getNews() {
           </div>
         </div>
             `;
-            if (oldLanguage === null) {
-              content.innerHTML += html;
-            }
-            else{
-              content.innerHTML = html;
-            }
-            oldLanguage = null
-
+      if (oldLanguage === null) {
+        content.innerHTML += html;
+      } else {
+        content.innerHTML = html;
+        categoryNumber = 0;
+      }
+      oldLanguage = null;
+      
     }
   } catch (error) {
     console.error(error);
+  }
+  if (categoryNumber !== 8 ) {
+    categoryNumber++
   }
 }
 
 getNews();
 
-
-
 // ------------------------------------------------INFINITE SCROLL------------------------------------------
 
+// Infinity scroll
+window.addEventListener("scroll", handleScroll);
+function handleScroll() {
+  const content = document.getElementById("content");
+  const contentHeight = content.offsetHeight;
+  const yOffset = window.pageYOffset;
+  const windowSize = window.innerHeight;
+  const triggerAt = 70;
 
-  // Infinity scroll
-  window.addEventListener("scroll", handleScroll);
-  function handleScroll() {
-    const content = document.getElementById("content");
-    const contentHeight = content.offsetHeight;
-    const yOffset = window.pageYOffset;
-    const windowSize = window.innerHeight;
-    const triggerAt = 70;
-  
-    if (yOffset + windowSize >= contentHeight - triggerAt) {
-      index=0
-      getNews(
-        
-      );
-      index++
-
-    }
+  if (yOffset + windowSize >= contentHeight - triggerAt) {
+    index = 0;
+    getNews();
+    index++;
   }
+}
 
+// ---------------------------------------------- CATEGORY OPTION ADDER -------------------------------------------------
 
-
-
-
-  // ---------------------------------------------- CATEGORY OPTION ADDER -------------------------------------------------
-
- const categoryBox = document.getElementById("category")
-    for (let index = 0; index < newsCategoryList.length; index++) {
-      let categoryHtml = `<div class="form-check m-2">
-    <input class="form-check-input" type="checkbox" value="" id="${
-      newsCategoryList[index]
-    }">
+const categoryBox = document.getElementById("category");
+for (let index = 0; index < newsCategoryList.length; index++) {
+  let categoryHtml = `<div class="form-check m-2">
+    <input class="form-check-input" type="checkbox" value="" id="${newsCategoryList[index]}">
     <label class="form-check-label" for="${newsCategoryList[index]}">
     ${newsCategoryList[index]}
     </label>
     </div>`;
-      categoryBox.innerHTML += categoryHtml;
-    }
-  
+  categoryBox.innerHTML += categoryHtml;
+}
 
 // ---------------------------------------------------FILTER AND WHAT FIND NEWS-----------------------------------------------
 
-
 findNews = () => {
+  content.innerHTML = ""
   for (let index = 0; index < categoryBox.children.length; index++) {
     if (categoryBox.children[index].children[0].checked) {
-        getNews(``)
-      }
+      categoryNumber = index
+      getNews();
     }
-  };
-    
+  }
+};
+
+// ---------------------------------------Change Language --------------------------------------
+
+langChangeButton = document.getElementById("langChangeButton");
+
+changeLanguage = () => {
+  if (Language === "en") {
+    oldLanguage = Language;
+    Language = "hi";
+  } else {
+    oldLanguage = Language;
+    Language = "en";
+  }
+  console.log(Language);
+  getNews();
+};
 
 
 
-  // ---------------------------------------Change Language --------------------------------------
-
-
-langChangeButton = document.getElementById("langChangeButton")
-
-
-changeLanguage = () =>{
-if (Language === "en") {
-  oldLanguage = Language
-  Language = "hi"
-}
-else{
-  oldLanguage = Language
-  Language="en"
-}
-console.log(Language);
-getNews()
-}
