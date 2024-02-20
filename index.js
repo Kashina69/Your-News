@@ -43,7 +43,7 @@ async function getNews() {
     const response = await fetch(API);
     const newsData = await response.json();
     newsArticles = newsData.articles;
-console.log(categoryNumber);
+console.log("category" + categoryNumber);
     for (let index = 0; index < newsArticles.length; index++) {
       var newsArticle = newsArticles[index];
       var html = `
@@ -84,12 +84,13 @@ console.log(categoryNumber);
   if (categoryNumber !== 8 ) {
     categoryNumber++
   }
+  else categoryNumber = 0
 }
 
 getNews();
 
 // ------------------------------------------------INFINITE SCROLL------------------------------------------
-
+index = 0
 // Infinity scroll
 window.addEventListener("scroll", handleScroll);
 function handleScroll() {
@@ -100,9 +101,11 @@ function handleScroll() {
   const triggerAt = 70;
 
   if (yOffset + windowSize >= contentHeight - triggerAt) {
-    index = 0;
+    ;
     getNews();
     index++;
+    console.log("index at infinity scroll " + index);
+    
   }
 }
 

@@ -1,0 +1,17 @@
+[debug] [2023-08-20T10:50:48.002Z] ----------------------------------------------------------------------
+[debug] [2023-08-20T10:50:48.004Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Kashina\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2023-08-20T10:50:48.004Z] CLI Version:   12.4.8
+[debug] [2023-08-20T10:50:48.004Z] Platform:      win32
+[debug] [2023-08-20T10:50:48.005Z] Node Version:  v20.4.0
+[debug] [2023-08-20T10:50:48.005Z] Time:          Sun Aug 20 2023 16:20:48 GMT+0530 (India Standard Time)
+[debug] [2023-08-20T10:50:48.005Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-08-20T10:50:48.055Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-08-20T10:50:48.055Z] > authorizing via signed-in user (princerawatji69@gmail.com)
+[debug] [2023-08-20T10:50:48.055Z] [iam] checking project your-news-69 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2023-08-20T10:50:48.057Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/your-news-69:testIamPermissions [none]
+[debug] [2023-08-20T10:50:48.057Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/your-news-69:testIamPermissions x-goog-quota-user=projects/your-news-69
+[debug] [2023-08-20T10:50:48.057Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/your-news-69:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-08-20T10:50:49.651Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/your-news-69:testIamPermissions 200
+[debug] [2023-08-20T10:50:49.651Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/your-news-69:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-08-20T10:50:49.652Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/your-news-69 [none]
